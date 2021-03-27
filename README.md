@@ -1,4 +1,4 @@
-# Compatability_games
+# Compatability Games
 This is a personal project where I work to better my understanding of various programming languages.
 The idea is that I write a game in many different languages using a client-server setup
 and the goal is to make it so that they can all interact at once.
