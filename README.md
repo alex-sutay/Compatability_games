@@ -26,17 +26,17 @@ Python version and a C++ version, but everything works as intended.
    * N is the int of the winning player number
  * DRAW
    * Sent if the game board fills with no winner
- * BOARD [N]
+ * BOARD S
    * A package containing the new board layout
-   * [N] is a series of ints formatted as "N N N N" representing the board
+   * S is the string representation of the board
  * ACK
    * In the case that one side needs to send 2 messages in a row, ACK will be sent in between
 
  Example: (taken from the middle of a game)
  Sender | Protocol
  -------|---------
- Sever  | BOARD [N]
+ Sever  | BOARD S
  Client | DROP N
  Server | WIN N
  Client | ACK
- Server | BOARD [N]
+ Server | BOARD S
