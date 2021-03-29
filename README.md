@@ -16,14 +16,12 @@ Python version and a C++ version, but everything works as intended.
 
  ## Network protocols for each game (uniform across languages)
  ### Connect 4
+ Server protocols:
  * MESSAGE S
    * Used for the server to send the client a message
    * S is the string of the message
  * TURN
    * Tell the client to take its turn
- * DROP N
-   * Sent to drop a token
-   * N is the int of the column to drop into
  * INVALID
    * Used if the DROP is sent to an invalid column
  * WIN B S
@@ -32,10 +30,16 @@ Python version and a C++ version, but everything works as intended.
    * S is the string of a message, including the gameboard
  * DRAW
    * Sent if the game board fills with no winner
+
+Client protocols:
+ * DROP N
+   * Sent to drop a token
+   * N is the int of the column to drop into
  * ACK
    * In the case that one side needs to send 2 messages in a row, ACK will be sent in between
 
  Examples: (only one client shown, {gameboard} would be the full gameboard string)
+ 
  Example 1 - Game start:
  Sender | Protocol | Full packet
  -------|----------|-------------------------------------------------
