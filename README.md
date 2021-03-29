@@ -27,9 +27,10 @@ Python version and a C++ version, but everything works as intended.
  * WIN B S
    * Sent when a player wins
    * B is the boolean of whether or not it was you, sent as T for True (you won) and F for False (you lost)
-   * S is the string of a message, including the gameboard
- * DRAW
+   * S is the string of a message, typically would be the gameboard
+ * DRAW S
    * Sent if the game board fills with no winner
+   * S is the string of a message, typically would be the gameboard
 
 Client protocols:
  * DROP N
