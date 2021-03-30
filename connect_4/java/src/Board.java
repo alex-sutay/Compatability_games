@@ -93,8 +93,8 @@ public class Board {
         int col = start_c;
 
         while(true) {
-            row += start_r;
-            col += start_c;
+            row += delta_r;
+            col += delta_c;
             try {
                 if (gameboard[row][col] == player) {
                     count += 1;
