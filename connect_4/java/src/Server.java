@@ -70,9 +70,11 @@ public class Server {
                 msg = String.format("MESSAGE Welcome to connect 4! You are player %c", players[0]);
                 outputs[0].write(msg.getBytes());
                 inputs[0].read(resp);  //wait for an ack
+                resp = new byte[1024]; // flush resp
                 msg = String.format("MESSAGE Welcome to connect 4! You are player %c", players[1]);
                 outputs[1].write(msg.getBytes());
                 inputs[1].read(resp);  //wait for an ack
+                resp = new byte[1024]; // flush resp
 
                 while (true) {
                     turn += 1;
@@ -80,15 +82,19 @@ public class Server {
                     msg = String.format("MESSAGE Turn %d: Player %c's turn:\n%s", turn, players[cur_player], board.toString());
                     outputs[0].write(msg.getBytes());
                     inputs[0].read(resp);  //wait for an ack
+                    resp = new byte[1024]; // flush resp
                     outputs[1].write(msg.getBytes());
                     inputs[1].read(resp);  //wait for an ack
+                    resp = new byte[1024]; // flush resp
                     outputs[cur_player].write("TURN".getBytes());
 
                     while (true) { //Drop the token
                         try {
                             inputs[cur_player].read(resp);
                             msg = new String(resp);
-                            col = Character.getNumericValue(msg.split(" ")[1].charAt(0));
+                            msg = msg.substring(0, msg.indexOf('\0'));  // Trim the null values off the end to make things better later
+                            resp = new byte[1024]; // flush resp
+                            col = Integer.parseInt(msg.split(" ")[1]);
                             if (board.drop(col, players[cur_player])) {
                                 break;
                             } else {
