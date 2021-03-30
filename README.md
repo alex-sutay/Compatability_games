@@ -10,9 +10,10 @@ Python version and a C++ version, but everything works as intended.
 
 ## Languages
 * Python
+* Java
 
 ## Currently under development
-* Connect 4/Python
+* Connect 4/Java
 
  ## Network protocols for each game (uniform across languages)
  ### Connect 4
