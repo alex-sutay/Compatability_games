@@ -16,13 +16,15 @@ class Board:
         """
         Constructor. By default boards are 6 rows x 7 columns
         """
-        # creates a 6x7 board indexed by self.board[row][column]
-        self._board = [['_' for _ in range(7)] for _ in range(6)]
+        # creates a 6x7 board indexed by self._board[row][column]
         if copy is not None:
             for r in range(6):
                 for c in range(7):
                     self._board[r][c] = copy._board[r][c]
-        self._last = (-1, -1)  # used later to track the (r, c) of the last dropped token
+            self._last = copy._last
+        else:
+            self._board = [['_' for _ in range(7)] for _ in range(6)]
+            self._last = (-1, -1)  # used later to track the (r, c) of the last dropped token
 
     def __str__(self):
         """
@@ -74,7 +76,7 @@ class Board:
             r, c = self._last
             return self._board[r][c]
 
-        # Check diagonally
+        # Check diagonally /
         count = 1
         count += self._count_equal(self._last, (1, 1))  # check up and right
         count += self._count_equal(self._last, (-1, -1))  # check down and left
@@ -82,7 +84,7 @@ class Board:
             r, c = self._last
             return self._board[r][c]
 
-        # Check vertically
+        # Check diagonally \
         count = 1
         count += self._count_equal(self._last, (-1, 1))  # check up and left
         count += self._count_equal(self._last, (1, -1))  # check down and right
@@ -160,6 +162,8 @@ def run_game(c1_sock, c2_sock):
             lose_sock.send(f'WIN F {gameboard}'.encode())
             break
         # todo check for a full board
+    c1_sock.close()
+    c2_sock.close()
 
 
 def start_server(port):

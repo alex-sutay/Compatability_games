@@ -37,6 +37,9 @@ def play(addr, port):
             print('Oops, no winner!')
             print(' '.join(packet.split(' ')[1:]))
             break
+        else:
+            print(packet)
+    c_sock.close()
     input('(press enter to exit)')
 
 
