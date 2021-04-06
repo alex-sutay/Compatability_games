@@ -14,6 +14,7 @@ The protocols are uniform across each language.
 ## Languages
 * Python
 * Java
+* Rust
 
 ## Currently under development
-* Connect 4/Java
+* Connect 4/Rust
