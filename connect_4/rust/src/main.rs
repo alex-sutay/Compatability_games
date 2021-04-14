@@ -1,61 +1,78 @@
 use std::io;
-//use socket2::{Socket, Domain, Type};
-//use std::net::SocketAddr;
+use std::net::{TcpStream, Shutdown};
+use std::io::{Read, Write};
 
 static PORT: i32 = 42000;
 
 fn play(addr: String, port: i32) {
-    println!("Connection successful, waiting for the game to start...");
-    let mut packet = String::new();
-    let mut cmd = String::new();
+    let mut buffer: [u8; 1024];
+    let mut packet: String;
+    let mut cmd: String;
+    let mut end: usize;
     let mut resp = String::new();
-    /*
-        let socket = Socket::new(Domain::IPV4, Type::STREAM, None)?;
-        let address: SocketAddr = addr.parse().unwrap();
-        socket.bind(&address.into())?;
-        socket.listen(port);*/
+    let mut stream = TcpStream::connect(format!("{}:{}", addr, port))
+                                            .expect("Failed to connect");
+
+    println!("Connection successful, waiting for the game to start...");
 
     loop {
-        io::stdin().read_line(&mut packet).expect("Failed to read line");
-        packet = String::from(packet.trim());
-        let mut split = packet.split(" ");
+        buffer = [0; 1024]; // Clear the buffer
+        stream.read(&mut buffer).expect("Network Error");
+
+        // Convert the received data into a string
+        packet = String::from_utf8(buffer.to_vec()).expect("Failed to convert bytes");
+        end = packet.find('\0').unwrap_or(packet.len());
+        packet = packet.drain(..end).collect();
+
+        let split= packet.split(" ");
         cmd = String::from(split.collect::<Vec<&str>>()[0]);
+
         match cmd.as_str() {
             "MESSAGE" => {
-                println!("{}", packet);
-                println!("ACK");  // Change to send
+                println!("{}", &packet[8..]);
+                stream.write("ACK".as_bytes()).expect("Network Error");
             }
 
             "TURN" => {
-                print!("Drop a token at: ");
+                println!("Drop a token at: ");
                 io::stdin().read_line(&mut resp).expect("Failed to read line");
-                println!("DROP {}", resp);  // Change to send
+                println!("DROP {}", resp);
+                stream.write(format!("DROP {}", resp).as_bytes()).expect("Network Error");
+                resp = String::from("");  //Clear resp
             }
 
             "INVALID" => {
-                print!("Invalid column, please choose again.\nDrop a token at: ");
+                println!("Invalid column, please choose again.\nDrop a token at: ");
                 io::stdin().read_line(&mut resp).expect("Failed to read line");
-                println!("DROP {}", resp);  // Change to send
+                println!("DROP {}", resp);
+                stream.write(format!("DROP {}", resp).as_bytes()).expect("Network Error");
+                resp = String::from("");  //Clear resp
             }
 
             "WIN" => {
-                println!("I'll do this in a sec");
+                let split= packet.split(" ");
+                cmd = String::from(split.collect::<Vec<&str>>()[1]);
+                if cmd == "T" {
+                    println!("Congrats, you win!");
+                } else {
+                    println!("Oh no, you lose!");
+                }
+                println!("{}", &packet[6..]);
                 break;
             }
 
             "DRAW" => {
-                println!("This one too");
+                println!("Oops, no winner!");
+                println!("{}", &packet[5..]);
                 break;
             }
 
             _ => println!("UNKNOWN '{}'", packet)
         }
-        cmd = String::from(""); // clear cmd
-        packet = String::from("");  // clear packet
     }
 
     // Outside game loop
-    // Close the socket here
+    stream.shutdown(Shutdown::Both).expect("TCP failed to close");
     println!("(press enter to exit)");
     io::stdin().read_line(&mut resp).expect("Failed to read line");
 
