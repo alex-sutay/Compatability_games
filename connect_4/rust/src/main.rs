@@ -36,7 +36,7 @@ fn play(addr: String, port: i32) {
             "TURN" => {
                 println!("Drop a token at: ");
                 io::stdin().read_line(&mut resp).expect("Failed to read line");
-                println!("DROP {}", resp);
+                resp = String::from(resp.trim());
                 stream.write(format!("DROP {}", resp).as_bytes()).expect("Network Error");
                 resp = String::from("");  //Clear resp
             }
@@ -44,7 +44,7 @@ fn play(addr: String, port: i32) {
             "INVALID" => {
                 println!("Invalid column, please choose again.\nDrop a token at: ");
                 io::stdin().read_line(&mut resp).expect("Failed to read line");
-                println!("DROP {}", resp);
+                resp = String::from(resp.trim());
                 stream.write(format!("DROP {}", resp).as_bytes()).expect("Network Error");
                 resp = String::from("");  //Clear resp
             }
